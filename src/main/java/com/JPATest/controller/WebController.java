@@ -41,6 +41,10 @@ public class WebController {
     	
     	
     	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
+    	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
+    	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
+    	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
+    	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
     	return rstMap;
     }
 }
