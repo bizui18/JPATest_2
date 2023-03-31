@@ -135,6 +135,7 @@ public class EcxelBoardController implements WebMvcConfigurer {
 					for (File oriFile : new File(directo).listFiles()) {
 						if(file.getName().equals(oriFile.getName())) {
 							file.delete();
+							System.out.println("check");
 						}
 					}	
 				}
