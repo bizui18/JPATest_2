@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.JPATest.mapper.LottoMapper">
+
+	<select id="getTop6LottoNo" parameterType="string" resultType="camelMap">
+		SELECT DRWT_NO
+		     , COUNT(DRWT_NO) AS CNT 
+		  FROM ( 
+		         SELECT DRWT_NO1 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT DRWT_NO2 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT DRWT_NO3 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT DRWT_NO4 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT DRWT_NO5 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT DRWT_NO6 AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		         UNION ALL
+		         SELECT BNUS_NO AS DRWT_NO FROM lotto_info WHERE DRW_NO <![CDATA[<=]]>#{param}
+		       ) A
+		 GROUP BY DRWT_NO
+		 ORDER BY CNT DESC
+		 LIMIT 6
+	</select>	
+
+	<select id="lottoNoStatsSel" parameterType="java.util.Map" resultType="camelMap">
+		SELECT DRWT_NO
+		     , COUNT(DRWT_NO) AS CNT 
+		  FROM ( 
+		         SELECT DRWT_NO1 AS DRWT_NO 
+		           FROM lotto_info 
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT DRWT_NO2 AS DRWT_NO 
+		           FROM lotto_info
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT DRWT_NO3 AS DRWT_NO 
+		           FROM lotto_info
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT DRWT_NO4 AS DRWT_NO 
+		           FROM lotto_info
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT DRWT_NO5 AS DRWT_NO 
+		           FROM lotto_info
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT DRWT_NO6 AS DRWT_NO 
+		           FROM lotto_info
+		          WHERE 1=1 
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		         UNION ALL
+		         SELECT BNUS_NO AS DRWT_NO 
+		           FROM lotto_info 
+		          WHERE 1=1
+		          	<if test='schStartDrwNo != null and schStartDrwNo != ""'>
+		            AND DRW_NO <![CDATA[>=]]>#{schStartDrwNo}
+		            </if>
+		            <if test='schEndDrwNo != null and schEndDrwNo != ""'>
+		            AND DRW_NO <![CDATA[<=]]>#{schEndDrwNo}
+		            </if>
+		       ) A
+		 GROUP BY DRWT_NO
+		 ORDER BY CNT DESC, DRWT_NO ASC
+	</select>	
+
+	<select id="notSelectedNumber" parameterType="java.util.Map" resultType="camelMap">
+		SELECT drwt_no1
+		     , drwt_no2
+		     , drwt_no3
+		     , drwt_no4
+		     , drwt_no5
+		     , drwt_no6 
+		  FROM expctd_lotto_no
+		 ORDER BY crt_date DESC
+		 LIMIT 1
+	</select>
+</mapper>
