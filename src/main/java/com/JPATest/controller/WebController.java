@@ -38,10 +38,8 @@ public class WebController {
     	logger.info("###### START [WebController :: /views/exptdLottoNoSel] ######");
     	
     	Map<String, String> rstMap = webService.exptdLottoNoSel();
-    	System.out.println("ddddd");
+
     	logger.info("###### END [WebController :: /views/exptdLottoNoSel] ######");
-    	System.out.println("ddddd");
-    	System.out.println("ddddd");
     	return rstMap;
     }
 }
