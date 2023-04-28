@@ -354,7 +354,7 @@ public class EcxelBoardController implements WebMvcConfigurer {
 
 		SKT("SKT",0,0),
 		KT("KT",5,2),
-		LGU("LGU",10,4),
+		LGU("LG U+",10,4),
 		;
 		private String name;
 		private int row;
