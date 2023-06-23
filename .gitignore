@@ -33,3 +33,5 @@ build/
 .vscode/
 *.xml
 pom.xml
+pom.xml
+src/main/resources/test.properties
