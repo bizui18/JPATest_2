@@ -4,9 +4,9 @@ public class Thread_main {
 	public static void main(String[] args) throws InterruptedException {
 		// main daemon
 		
-		Thread[] ts = new Thread_thread[10000];
+		Thread[] ts = new Thread_thread[4];
 		for (int i = 0; i < ts.length; i++) {
-			ts[i] = new Thread_thread(1000);
+			ts[i] = new Thread_thread(1000000);
 			ts[i].start();
 //			ts[i].join();		
 		}
