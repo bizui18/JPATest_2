@@ -141,7 +141,6 @@ public class EcxelBoardController implements WebMvcConfigurer {
 					for (File oriFile : new File(directo).listFiles()) {
 						if (file.getName().equals(oriFile.getName())) {
 							file.delete();
-							System.out.println("check");
 						}
 					}
 				}
@@ -228,62 +227,17 @@ public class EcxelBoardController implements WebMvcConfigurer {
 
 			x = (XSSFWorkbook) WorkbookFactory.create(src);
 
-			
-			coverShitJobs(x);
+			/**
+			 * cover sheet border line 수정
+			 */
+			coverSheetJobs(x.getSheetAt(0));
 			
 			/**
 			 * main shit 수정
 			 */
-			XSSFSheet mainShit = x.getSheetAt(1);
+			mainSheetJobs(TEL, x.getSheetAt(1));
 
-			// sk 머지된 영역 제거하기
-			// 한번만 반복하면 풀리지 않는 머지 영역이 있어서 3번을 돌린다.
-			for (int j = 0; j < 3; j++) {
-				for (int i = 0; i < mainShit.getNumMergedRegions(); i++) {
-					CellRangeAddress s = mainShit.getMergedRegion(i);
-					if (15 < s.getFirstRow() && s.getFirstRow() < 26) {
-						mainShit.removeMergedRegion(i);
-					}
-				}
-			}
-
-			// 상단 2줄에 값 옮겨 넣기
-			mainShit.getRow(11).getCell(1).setCellValue(TEL.getName());
-			copyRowValue(mainShit.getRow(13), mainShit.getRow(13 + TEL.getRow()), 0);
-			copyRowValue(mainShit.getRow(14), mainShit.getRow(14 + TEL.getRow()), 0);
-
-			// 나머지 줄 삭제
-			for (int i = 16; i < 26; i++) {
-				mainShit.createRow(i);
-			}
-
-			// 줄별 처리
-			for (int i = 31; i < 37; i++) { // row
-				XSSFRow ro = mainShit.getRow(i);
-				if (ro == null)
-					continue;
-
-				// 결과 부분 컬럼 수정
-				for (int j = 0; j < ro.getLastCellNum(); j++) { // collum
-					XSSFCell c = ro.getCell(j);
-					if (c != null) {
-						if (j == 3) {
-							if (ro.getCell(j + TEL.getColumn()).getRawValue() != null) {
-								copyCellValue(c, ro.getCell(j + TEL.getColumn()));
-							}
-						}
-						if (4 < j && j < 9) {
-							c.setBlank();
-							c.setCellStyle(null);
-						}
-					}
-				}
-			}
-
-			// 빈줄 잘라내기
-			mainShit.shiftRows(26, 48, -10);
-
-			// 마무리 작업
+			// 마무리 작업(결과물 저장)
 			File newFolder = new File(directo);
 			if (!newFolder.exists()) {
 				newFolder.mkdirs();
@@ -298,9 +252,58 @@ public class EcxelBoardController implements WebMvcConfigurer {
 		}
 	}
 
+	private static XSSFSheet mainSheetJobs(Telecom TEL, XSSFSheet mainSheet) {
+
+		// 한번만 반복하면 풀리지 않는 머지 영역이 있어서 3번을 돌린다. 아직 이유는 파악하지 못함.
+		for (int j = 0; j < 3; j++) {
+			for (int i = 0; i < mainSheet.getNumMergedRegions(); i++) {
+				CellRangeAddress s = mainSheet.getMergedRegion(i);
+				if (15 < s.getFirstRow() && s.getFirstRow() < 26) {
+					mainSheet.removeMergedRegion(i);
+				}
+			}
+		}
+
+		// 상단 2줄에 값 옮겨 넣기
+		mainSheet.getRow(11).getCell(1).setCellValue(TEL.getName());
+		copyRowValue(mainSheet.getRow(13), mainSheet.getRow(13 + TEL.getRow()), 0);
+		copyRowValue(mainSheet.getRow(14), mainSheet.getRow(14 + TEL.getRow()), 0);
+
+		// 나머지 줄 삭제
+		for (int i = 16; i < 26; i++) {
+			mainSheet.createRow(i);
+		}
+
+		// 줄별 처리
+		for (int i = 31; i < 37; i++) { // row
+			XSSFRow ro = mainSheet.getRow(i);
+			if (ro == null)
+				continue;
+
+			// 결과 부분 컬럼 수정
+			for (int j = 0; j < ro.getLastCellNum(); j++) { // collum
+				XSSFCell c = ro.getCell(j);
+				if (c != null) {
+					if (j == 3) {
+						if (ro.getCell(j + TEL.getColumn()).getRawValue() != null) {
+							copyCellValue(c, ro.getCell(j + TEL.getColumn()));
+						}
+					}
+					if (4 < j && j < 9) {
+						c.setBlank();
+						c.setCellStyle(null);
+					}
+				}
+			}
+		}
+
+		// 빈줄 잘라내기
+		mainSheet.shiftRows(26, 48, -10);
+		return mainSheet;
+	}
+
 	// 표지 줄 테두리 설정하기
-	private static XSSFSheet coverShitJobs(XSSFWorkbook x) {
-		XSSFSheet coverShit = x.getSheetAt(0);
+	private static XSSFSheet coverSheetJobs(XSSFSheet coverShit) {
 		BorderStyle top = BorderStyle.NONE;
 		BorderStyle bottom = BorderStyle.HAIR;
 		int firstRow = 21;
@@ -400,7 +403,7 @@ public class EcxelBoardController implements WebMvcConfigurer {
 		KT("KT", "KT", 5, 2),
 		LGU("LGU+", "LG U+", 10, 4),
 		;
-		// LGU+는 파일 이름으로 사용하고 LG U+는 파일 내부에서 사용된다.
+		// LGU+는 '파일 이름'으로 사용하고 LG U+는 '파일 내부'에서 사용된다.
 		private String title; // 파일 이름에 사용되는 이름
 		private String name; // 파일 내부에서 사용되는 이름
 		private int row;
