@@ -317,7 +317,6 @@ public class EcxelBoardController implements WebMvcConfigurer {
 			if (i==lastRow) {
 				top = BorderStyle.THIN;
 				bottom = BorderStyle.NONE;
-				System.out.printf("top : %s , bottom : %s\n",top.name(),bottom.name());
 			}
 			
 			for (int j = firstCell; j <lastCell ; j++) {
@@ -327,7 +326,6 @@ public class EcxelBoardController implements WebMvcConfigurer {
 				cellStyle.setBorderBottom(bottom);
 				c.setCellStyle(cellStyle);
 			}
-			
 		}
 		
 		return coverShit;

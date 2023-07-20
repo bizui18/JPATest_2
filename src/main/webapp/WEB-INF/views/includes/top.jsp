@@ -34,6 +34,12 @@
 	                        <a class="dropdown-item" id="menuDailyReportExcelPage" href="dailyReportExcel">일일보고서 엑셀 작업</a>
 	                    </div>
 	                </li>
+	                <li class="nav-item dropdown">
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">API</a>
+	                    <div class="dropdown-menu" id="menuTest">
+	                        <a class="dropdown-item" id="menuAPISendTestPage" href="apiSendTestPage">API 전송 테스트</a>
+	                    </div>
+	                </li>
 	            </ul>
 	        </div>
 	    </div>
