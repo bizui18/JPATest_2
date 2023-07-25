@@ -27,9 +27,15 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery-chained/1.0.1/jquery.chained.min.js'></script>
 <script>
+
 	$(document).ready(function(){
 		fnSchUrl();
+		
+		$("#menuAPISendTestBoard").attr('class','dropdown-item active'); 
+		$("#menuHome").attr('class','nav-link');
+		$("#selJsonData").css("visibility","hidden");
 	});
 
 	//URL 가져오기
@@ -38,13 +44,17 @@
             url : 'selTrgtUrl',
             type : 'GET', 
             success : function(result) {
-            	$('#selUrl').empty();
+            	$('#selAPI').empty();
             	if(result.length > 0){
 		            for(let i=0; i<result.length;i++){
 		            	var option = $("<option value=\"" + result[i].targetUrl + "\">" + result[i].urlAcnt + "</option>");
-		                $('#selUrl').append(option);
+		                $('#selAPI').append(option);
+		            	
+		                var jsonData = $("<option class=\"" + result[i].targetUrl + "\" value=\"" + result[i].jsonData + "\">" + result[i].jsonData + "</option>");
+		                $('#selJsonData').append(jsonData);
 		            }
 	            }
+            	$("#selJsonData").chained("#selAPI");
             },  
             error : function(xhr, status) {
                 alert(xhr + " : " + status);
@@ -55,13 +65,14 @@
 	//보내기(전송)
 	function fnSendJson(param){
 		var formData = new FormData();
-		var urlText = document.getElementById('serverText').value + document.getElementById('selUrl').value;
+		var urlText = $("#serverText").val() + $("#selAPI").val();
 		
 		formData.append("text", $("#sendJsonText").val());
 		formData.append("encYn", $("#encYn").val());
 		formData.append("urlText", urlText);
 	    
-		document.getElementById('sendUrl').value = urlText;
+		$("#sendUrl").val(urlText);
+		$("#resultJsonText").val("");
 		
 	    $.ajax({
 	        url : "sendJson",
@@ -80,16 +91,22 @@
 	}
 	
 	//서버 선택
-	function fnselServer(param){
-		document.getElementById('serverText').value = param;
-		document.getElementById('sendUrl').value = "";
+	function fnSelServer(param){
+		$("#serverText").val(param);
+		$("#sendUrl").val("");
 	}
 	
 	//API 선택
-	function fnselUrl(param){
-		document.getElementById('sendUrl').value = "";
+	function fnSelAPI(param){
+		$("#sendUrl").val("");
 	}
 
+	//샘플 Json 양식 생성
+	function fnSampleJson(){
+		$("#sendUrl").val("");
+		$("#sendJsonText").val($("#selJsonData option:selected").text());
+	}
+	
 </script>
 <body>
 	<%@ include file="/WEB-INF/views/includes/top.jsp" %>
@@ -97,7 +114,13 @@
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a href="lottoIndex">Home</a></li>
 		<li class="breadcrumb-item">API</li>
-		<li class="breadcrumb-item">API 전송 테스트</li>
+		<li class="breadcrumb-item active">
+		    <a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">API 전송 테스트</a>
+		    <div class="dropdown-menu" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-start">
+		        <a class="dropdown-item active" href="apiSendTestBoard">API 전송 테스트</a>
+		        <a class="dropdown-item " href="encDecBoard">암복호화</a>
+		    </div>
+		</li>
 	</ol>	
 
 		
@@ -107,10 +130,10 @@
 
 		<form id="textArea" name="textArea" action="textArea" method="GET">
 			<div class="form-group">
-				<label for="exampleTextarea" class="form-label mt-4">Send JSon DATA 부</label>
-				<textarea class="form-control" id="sendJsonText" name="sendJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
+	
 			</div>
 			<div class="form-group">
+				<label class="form-label mt-4" for="selJsonData">Send JSon DATA 부</label>
 				<table>
 					<tr>
 						<td> 암호화 :</td> 
@@ -122,7 +145,7 @@
 					    </td>
 						<td width="70" align="right"> URL :</td> 
 						<td>
-							<select class="form-select" name="selServer" id="selServer" style="max-width:fit-content" onchange="fnselServer(this.value)">
+							<select class="form-select" name="selServer" id="selServer" style="max-width:fit-content" onchange="fnSelServer(this.value)">
 						    	<option value="http://localhost:8082">로컬</option>
 						    	<option value="https://dev-interface.pass-mdl.com:5243">개발</option>
 					    	</select>
@@ -131,20 +154,34 @@
 					    	<input type="text" id="serverText" name="serverText" class="form-control" value="http://localhost:8082"/>
 					    </td>
 						<td>
-							<select class="form-select" name="selUrl" id="selUrl" style="max-width:fit-content" onchange="fnselUrl(this.value)">
+							<select class="form-select" name="selAPI" id="selAPI" style="max-width:fit-content" onchange="fnSelAPI(this.value)">
 					    	</select>
 					    </td>
-				    	<td width="100" align="right">
-							<button class="btn btn-primary" type="button" id="sendJsonBt" onClick="fnSendJson()">보내기</button>
-						</td>
-						<td width="800">
-					    	<input type="text" id="sendUrl" name="sendUrl" class="form-control" readonly="readonly"/>
+				    	<td>
+							<button class="btn btn-primary" type="button" id="sampleJsonBt" onClick="fnSampleJson()">Json 양식 생성</button>
+						</td>					    
+						<td width="100">
+							<select class="form-select" name="selJsonData" id="selJsonData" style="width:100">
+					    	</select>
 					    </td>
 				    </tr>
 				</table>
+				<textarea class="form-control" id="sendJsonText" name="sendJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
 			</div>
+			<div>
+				<table>
+					<tr>
+				    	<td>
+							<button class="btn btn-primary" type="button" id="sendJsonBt" onClick="fnSendJson()">보내기</button>
+						</td>
+						<td width="800">
+					    	<input type="text" id="sendUrl" name="sendUrl" class="form-control" readonly="readonly" disabled="disabled"/>
+					    </td>
+					</tr>
+				</table>
+			</div>			
 			<div class="form-group">
-				<label for="exampleTextarea" class="form-label mt-4">Result JSon</label>
+				<label class="form-label mt-4" for="resultJsonText">Result JSon</label>
 				<textarea class="form-control" id="resultJsonText" name="resultJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
 			</div>
 		</form>	

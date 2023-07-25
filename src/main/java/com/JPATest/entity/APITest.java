@@ -24,9 +24,13 @@ public class APITest {
 	@Column(length = 200)
 	private String urlAcnt;
 	
+	@Column(length = 300)
+	private String jsonData;
+	
 	@Builder
-	public APITest(String targetUrl, String urlAcnt) {
+	public APITest(String targetUrl, String urlAcnt, String jsonData) {
 		this.targetUrl = targetUrl;
 		this.urlAcnt = urlAcnt;
+		this.jsonData = jsonData;
 	}
 }

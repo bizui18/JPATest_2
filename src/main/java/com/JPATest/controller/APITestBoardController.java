@@ -52,15 +52,17 @@ public class APITestBoardController implements WebMvcConfigurer {
 	
 	private static final int SEED_BLOCK_SIZE = 16;
 	
-	private String key = "MLDDEVSAMPLEKEY!";
-	private String iv = "t.mobilelcnse.iv";
+	private String dev_key = "MLDDEVSAMPLEKEY!";
+	private String dev_iv = "t.mobilelcnse.iv";
+	private String prod_key = "ncFqG7o61jWp4HFh!";
+	private String prod_iv = "p.mobilelcnse.dr";
 	
-	@RequestMapping("/apiSendTestPage")
-	public String apiSendTestPage(@RequestParam(value = "schDrwNo", required = false) String schDrwNo, Model model) throws Exception {
-		logger.info("###### START [APITestBoardController :: /views/apiSendTestPage] ######");
+	@RequestMapping("/apiSendTestBoard")
+	public String apiSendTestBoard(@RequestParam(value = "schDrwNo", required = false) String schDrwNo, Model model) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/apiSendTestBoard] ######");
 
-		logger.info("###### END [APITestBoardController :: /views/apiSendTestPage] ######");
-		return "apiSendTestPage";
+		logger.info("###### END [APITestBoardController :: /views/apiSendTestBoard] ######");
+		return "apiSendTestBoard";
 	}
 
 	@ResponseBody
@@ -74,7 +76,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 		if(!text.isEmpty()) {
 		    
 	        if(encYn.equals("Y")) {
-	        	encryptCBC = "{\"data\":\"" + encryptCBC(text, key, iv) + "\"}";
+	        	encryptCBC = "{\"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
 	        } else {
 	        	encryptCBC = "{\"data\":" + text + "}";
 	        }
@@ -130,13 +132,9 @@ public class APITestBoardController implements WebMvcConfigurer {
 		      JSONParser parser = new JSONParser();
 		      JSONObject jsonObject = (JSONObject) parser.parse(result.toString());
 		      
-		      System.out.println(jsonObject.toString());
 		      if(encYn.equals("Y")) {
-		    	  System.out.println(jsonObject.get("resultCode").toString());
 		    	  if(jsonObject.get("resultCode").toString().equals("0000")) {
-		    		  System.out.println("22222");
-				      String decryptCBC = decryptCBC(jsonObject.get("data").toString(), key, iv);
-				      System.out.println(decryptCBC);
+				      String decryptCBC = decryptCBC(jsonObject.get("data").toString(), dev_key, dev_iv);
 				      
 				      JSONObject dataJson = (JSONObject) parser.parse(decryptCBC);
 				      jsonObject.put("data", dataJson);
@@ -190,5 +188,43 @@ public class APITestBoardController implements WebMvcConfigurer {
 		} else {
 			return new String(BlockPadding.getInstance().removePadding(decrypt, SEED_BLOCK_SIZE), charset);
 		}
+	}
+
+	@RequestMapping("/encDecBoard")
+	public String encDecBoard(@RequestParam(value = "schDrwNo", required = false) String schDrwNo, Model model) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/encDecBoard] ######");
+		
+		logger.info("###### END [APITestBoardController :: /views/encDecBoard] ######");
+		return "encDecBoard";
+	}
+
+
+	@ResponseBody
+	@PostMapping("/sendEndDecData")
+	public String sendEndDecData(String data, String encDecFg, String serverFg) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/sendEndDecData] ######");
+
+		String result = "";
+		
+		if(!data.isEmpty()) {
+	        if(encDecFg.equals("ENC")) {
+	        	if(serverFg.equals("DEV")) {
+	        		result = encryptCBC(data, dev_key, dev_iv);
+	        	}else if(serverFg.equals("PROD")) {
+	        		result = encryptCBC(data, prod_key, prod_iv);
+	        	}
+	        	logger.info("###### encryptCBC : " + result + " ######");
+	        } else if(encDecFg.equals("DEC")) {
+	        	if(serverFg.equals("DEV")) {
+	        		result = decryptCBC(data, dev_key, dev_iv);
+	        	}else if(serverFg.equals("PROD")) {
+	        		result = decryptCBC(data, prod_key, prod_iv);
+	        	}
+	        	logger.info("###### decryptCBC : " + result + " ######");
+	        }
+		}
+		
+		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
+		return result;
 	}
 }

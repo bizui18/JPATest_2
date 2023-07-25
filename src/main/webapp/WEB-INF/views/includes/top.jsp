@@ -37,7 +37,8 @@
 	                <li class="nav-item dropdown">
 	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">API</a>
 	                    <div class="dropdown-menu" id="menuTest">
-	                        <a class="dropdown-item" id="menuAPISendTestPage" href="apiSendTestPage">API 전송 테스트</a>
+	                        <a class="dropdown-item" id="menuAPISendTestBoard" href="apiSendTestBoard">API 전송 테스트</a>
+	                        <a class="dropdown-item" id="menuEncDecPage" href="encDecBoard">암복호화</a>
 	                    </div>
 	                </li>
 	            </ul>
