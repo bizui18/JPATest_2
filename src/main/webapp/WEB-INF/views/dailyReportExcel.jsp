@@ -28,125 +28,127 @@
 <script src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
 <script>
-$(document).ready(function(){
-	fnExcelList();
-});
-//작업 파일 리스트
-function fnExcelList(param){
+	$(document).ready(function(){
+		fnExcelList();
 		
-	var formData = $("#excelList");
+		$("#menuDailyReportExcelPage").attr('class','dropdown-item active'); 
+		$("#menuHome").attr('class','nav-link'); 
+	});
 	
-    $.ajax({
-    	url : "excelList"
-        , type : 'GET'
-        , data : formData.serialize()
-        , dataType: 'json'
-        , success : function(result) {
-        	// 리스트
-        	let res="";
-            $('#excelFileListTb > tbody').empty();
-            if(result.length > 0){
-	            for(let i=0;i<result.length;i++){
-	             	res+="<tr id='excelFileListTr' name='excelFileListTr'>"
-	                		+"<td><a href='/dailyReportFin/"+result[i].fileNm+"' download'>"+result[i].fileNm+"</a></td>"
-	                		+"<td><button type='button' class='btn btn-primary btn-sm' onClick=\"fnDelExcelFile('"+result[i].fileNm+"')\">삭제</button></td></tr>";
+	//작업 파일 리스트
+	function fnExcelList(param){
+			
+		var formData = $("#excelList");
+		
+	    $.ajax({
+	    	url : "excelList"
+	        , type : 'GET'
+	        , data : formData.serialize()
+	        , dataType: 'json'
+	        , success : function(result) {
+	        	// 리스트
+	        	let res="";
+	            $('#excelFileListTb > tbody').empty();
+	            if(result.length > 0){
+		            for(let i=0;i<result.length;i++){
+		             	res+="<tr id='excelFileListTr' name='excelFileListTr'>"
+		                		+"<td><a href='/dailyReportFin/"+result[i].fileNm+"' download'>"+result[i].fileNm+"</a></td>"
+		                		+"<td><button type='button' class='btn btn-primary btn-sm' onClick=\"fnDelExcelFile('"+result[i].fileNm+"')\">삭제</button></td></tr>";
+		            }
 	            }
-            }
-	        $('#excelFileListTb').append(res);
-        }
-    	, error : function(xhr, status) {
-            alert(xhr + " : " + status);
-        }
-    });
-}
-
-/*
-//엑셀 작업
-function fnExcelOperate(param){
+		        $('#excelFileListTb').append(res);
+	        }
+	    	, error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
+	
+	/*
+	//엑셀 작업
+	function fnExcelOperate(param){
+			
+		$('#spinner').show();
 		
-	$('#spinner').show();
+		var formData = $("#excelOperate");
+	    
+	    $.ajax({
+	    	url : "excelOperate"
+	        , type : 'GET'
+	        , data : formData.serialize()
+	        , dataType: 'text'
+	        , success : function(result) {
+	        	$('#spinner').hide();
+	        	alert(result);
+	        }
+	    	, error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
+	*/
 	
-	var formData = $("#excelOperate");
-    
-    $.ajax({
-    	url : "excelOperate"
-        , type : 'GET'
-        , data : formData.serialize()
-        , dataType: 'text'
-        , success : function(result) {
-        	$('#spinner').hide();
-        	alert(result);
-        }
-    	, error : function(xhr, status) {
-            alert(xhr + " : " + status);
-        }
-    });
-}
-*/
-
-//파일 작업
-function fnMultiUpload(){
-
-	if($("#formFile").val() == ""){
-		alert("첨부된 파일이 없습니다.");
-		return;
-	}	
-    
-    var formData = new FormData();
-    var inputFile = $("input[name='formFile']");
-    var files = inputFile[0].files;
-
-    $('#spinner').show();
-    $('#spinnerButton').show();
-    
-    for(var i=0; i<files.length; i++){
-    	formData.append("uploadFile", files[i]);
-    }
-    
-    formData.append("text", $("#text").val());
-    
-    $.ajax({
-        url : "multiUpload"
-        , type : "POST"
-        , processData : false
-        , contentType : false
-        , data : formData
-        , success : function(result) {
-        	
-        	$('#spinner').hide();
-        	$('#spinnerButton').hide();
-
-        	alert(result);
-        	fnExcelList();
-        	$("#formFile").val("");
-        }
-    	, error : function(xhr, status) {
-        	alert(xhr + " : " + status);
-        }
-   });
-}
-
-//파일 삭제
-function fnDelExcelFile(fileNm){
-
-	var formData = new FormData();
-	formData.append("fileNm", fileNm);
+	//파일 작업
+	function fnMultiUpload(){
 	
-    $.ajax({
-    	url : "delExcel"
-        , type : 'POST'
-        , processData : false
-        , contentType : false
-        , data : formData
-        , success : function(result) {
-        	alert(result);
-        	fnExcelList();
-        }
-    	, error : function(xhr, status) {
-            alert(xhr + " : " + status);
-        }
-    });
-}
+		if($("#formFile").val() == ""){
+			alert("첨부된 파일이 없습니다.");
+			return;
+		}	
+	    
+	    var formData = new FormData();
+	    var inputFile = $("input[name='formFile']");
+	    var files = inputFile[0].files;
+	
+	    $('#spinner').show();
+	    $('#spinnerButton').show();
+	    
+	    for(var i=0; i<files.length; i++){
+	    	formData.append("uploadFile", files[i]);
+	    }
+	    
+	    formData.append("text", $("#text").val());
+	    
+	    $.ajax({
+	        url : "multiUpload"
+	        , type : "POST"
+	        , processData : false
+	        , contentType : false
+	        , data : formData
+	        , success : function(result) {
+	        	$('#spinner').hide();
+	        	$('#spinnerButton').hide();
+	
+	        	alert(result);
+	        	fnExcelList();
+	        	$("#formFile").val("");
+	        }
+	    	, error : function(xhr, status) {
+	        	alert(xhr + " : " + status);
+	        }
+	   });
+	}
+	
+	//파일 삭제
+	function fnDelExcelFile(fileNm){
+		var formData = new FormData();
+		formData.append("fileNm", fileNm);
+		
+	    $.ajax({
+	    	url : "delExcel"
+	        , type : 'POST'
+	        , processData : false
+	        , contentType : false
+	        , data : formData
+	        , success : function(result) {
+	        	alert(result);
+	        	fnExcelList();
+	        }
+	    	, error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
 
 </script>
 <body>

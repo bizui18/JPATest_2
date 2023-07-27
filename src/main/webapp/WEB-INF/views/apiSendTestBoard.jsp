@@ -29,6 +29,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-chained/1.0.1/jquery.chained.min.js'></script>
 <script>
+	var hisNum = 0;
 
 	$(document).ready(function(){
 		fnSchUrl();
@@ -83,6 +84,7 @@
 	        success : function(result) {
 	        	let json = result;
 	        	$("#resultJsonText").val(JSON.stringify(result,null,4));
+	        	$("#his"+hisNullcheck()).val($("#sendJsonText").val());
 	        },  
 	        error : function(xhr, status) {
 	            alert(xhr + " : " + status);
@@ -105,6 +107,20 @@
 	function fnSampleJson(){
 		$("#sendUrl").val("");
 		$("#sendJsonText").val($("#selJsonData option:selected").text());
+	}
+	
+	function hisNullcheck(){
+		if(hisNum > 5 ){
+			hisNum = 1;
+			return 1;
+		}else{
+			hisNum ++;
+			return hisNum;
+		}
+	}
+	
+	function hisClick(param){
+		$("#sendJsonText").val(param);
 	}
 	
 </script>
@@ -130,10 +146,48 @@
 
 		<form id="textArea" name="textArea" action="textArea" method="GET">
 			<div class="form-group">
-	
+				<label class="form-label mt-4" for="selJsonData">Send JSon DATA 부</label>
+			</div>
+			<div class="form-group" style="float:right; width:450px;">
+				<table >
+					<tr >
+						<td>
+							HISTORY
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his1" name="his1" class="form-control" onclick="hisClick(this.value)"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his2" name="his2" class="form-control"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his3" name="his3" class="form-control"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his4" name="his4" class="form-control"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his5" name="his5" class="form-control"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="his6" name="his6" class="form-control"/>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div class="form-group">
-				<label class="form-label mt-4" for="selJsonData">Send JSon DATA 부</label>
 				<table>
 					<tr>
 						<td> 암호화 :</td> 
@@ -160,15 +214,17 @@
 				    	<td>
 							<button class="btn btn-primary" type="button" id="sampleJsonBt" onClick="fnSampleJson()">Json 양식 생성</button>
 						</td>					    
-						<td width="100">
+						<td width="350">
 							<select class="form-select" name="selJsonData" id="selJsonData" style="width:100">
 					    	</select>
 					    </td>
 				    </tr>
+				    <tr>
+				    	<td colspan="8">
+							<textarea class="form-control" id="sendJsonText" name="sendJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
+						</td>
+					</tr>
 				</table>
-				<textarea class="form-control" id="sendJsonText" name="sendJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
-			</div>
-			<div>
 				<table>
 					<tr>
 				    	<td>
@@ -179,7 +235,8 @@
 					    </td>
 					</tr>
 				</table>
-			</div>			
+			</div>
+
 			<div class="form-group">
 				<label class="form-label mt-4" for="resultJsonText">Result JSon</label>
 				<textarea class="form-control" id="resultJsonText" name="resultJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
