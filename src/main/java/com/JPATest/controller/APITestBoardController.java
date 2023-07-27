@@ -223,7 +223,6 @@ public class APITestBoardController implements WebMvcConfigurer {
 	        	logger.info(serverFg + "_복호화 : " + result);
 	        }
 		}
-		
 		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
 		return result;
 	}

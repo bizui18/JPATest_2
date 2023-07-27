@@ -29,8 +29,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-chained/1.0.1/jquery.chained.min.js'></script>
 <script>
-	var hisNum = 0;
-
 	$(document).ready(function(){
 		fnSchUrl();
 		
@@ -84,7 +82,8 @@
 	        success : function(result) {
 	        	let json = result;
 	        	$("#resultJsonText").val(JSON.stringify(result,null,4));
-	        	$("#his"+hisNullcheck()).val($("#sendJsonText").val());
+	        	hisNullcheck();
+	        	$("#his1").val($("#sendJsonText").val());
 	        },  
 	        error : function(xhr, status) {
 	            alert(xhr + " : " + status);
@@ -110,12 +109,8 @@
 	}
 	
 	function hisNullcheck(){
-		if(hisNum > 5 ){
-			hisNum = 1;
-			return 1;
-		}else{
-			hisNum ++;
-			return hisNum;
+		for(var i=6; i>1; i--){
+			$("#his"+i).val($("#his"+(i-1)).val());
 		}
 	}
 	
@@ -162,27 +157,27 @@
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his2" name="his2" class="form-control"/>
+							<input type="text" id="his2" name="his2" class="form-control" onclick="hisClick(this.value)"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his3" name="his3" class="form-control"/>
+							<input type="text" id="his3" name="his3" class="form-control" onclick="hisClick(this.value)"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his4" name="his4" class="form-control"/>
+							<input type="text" id="his4" name="his4" class="form-control" onclick="hisClick(this.value)"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his5" name="his5" class="form-control"/>
+							<input type="text" id="his5" name="his5" class="form-control" onclick="hisClick(this.value)"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his6" name="his6" class="form-control"/>
+							<input type="text" id="his6" name="his6" class="form-control" onclick="hisClick(this.value)"/>
 						</td>
 					</tr>
 				</table>
