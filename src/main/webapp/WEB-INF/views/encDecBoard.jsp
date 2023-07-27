@@ -57,7 +57,9 @@
 	        }
 	    });
 	}
-	
+	function fnBeauty(){
+		$("#resultData").val(JSON.stringify(JSON.parse($("#resultData").val()),null,4));
+	}
 </script>
 <body>
 	<%@ include file="/WEB-INF/views/includes/top.jsp" %>
@@ -118,6 +120,15 @@
 				<label class="form-label mt-4" for="resultData">RESULT DATA</label>
 				<textarea class="form-control" id="resultData" name="resultData" rows="10" data-grammar="true" spellcheck="false"></textarea>
 			</div>
+			<div>
+				<table>
+					<tr>
+				    	<td>
+							<button class="btn btn-primary" type="button" id="beautyBt" onClick="fnBeauty()">JSON 정렬</button>
+						</td>
+					</tr>
+				</table>
+			</div>			
 		</form>	
 	</div>
 </body>

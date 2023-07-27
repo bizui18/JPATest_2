@@ -213,14 +213,14 @@ public class APITestBoardController implements WebMvcConfigurer {
 	        	}else if(serverFg.equals("PROD")) {
 	        		result = encryptCBC(data, prod_key, prod_iv);
 	        	}
-	        	logger.info("###### encryptCBC : " + result + " ######");
+	        	logger.info(serverFg + "_암호화 : " + result);
 	        } else if(encDecFg.equals("DEC")) {
 	        	if(serverFg.equals("DEV")) {
 	        		result = decryptCBC(data, dev_key, dev_iv);
 	        	}else if(serverFg.equals("PROD")) {
 	        		result = decryptCBC(data, prod_key, prod_iv);
 	        	}
-	        	logger.info("###### decryptCBC : " + result + " ######");
+	        	logger.info(serverFg + "_복호화 : " + result);
 	        }
 		}
 		
