@@ -35,7 +35,17 @@
 		$("#menuAPISendTestBoard").attr('class','dropdown-item active'); 
 		$("#menuHome").attr('class','nav-link');
 		$("#selJsonData").css("visibility","hidden");
-		
+		/*
+		$("#sendJsonText").on('keydown',(e,data)=>{
+			if(e.altKey&&e.key =='s'){
+				fnSendJson();	
+			}else if(e.altKey&&49 <=e.keyCode && e.keyCode <55){
+				hisVal = $("#his" + (e.keyCode - 48)).val();
+				$("#sendJsonText").val(hisVal)
+				
+			}
+		});
+		*/
 		for(var i=1; i<7; i++){
 			$("#his"+i).hide();
 		}
