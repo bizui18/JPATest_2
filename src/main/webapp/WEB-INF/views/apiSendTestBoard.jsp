@@ -35,6 +35,10 @@
 		$("#menuAPISendTestBoard").attr('class','dropdown-item active'); 
 		$("#menuHome").attr('class','nav-link');
 		$("#selJsonData").css("visibility","hidden");
+		
+		for(var i=1; i<7; i++){
+			$("#his"+i).hide();
+		}
 	});
 
 	//URL 가져오기
@@ -82,6 +86,7 @@
 	        success : function(result) {
 	        	let json = result;
 	        	$("#resultJsonText").val(JSON.stringify(result,null,4));
+	        	$("#his1").show();
 	        	hisNullcheck();
 	        	$("#his1").val($("#sendJsonText").val());
 	        },  
@@ -110,6 +115,9 @@
 	
 	function hisNullcheck(){
 		for(var i=6; i>1; i--){
+			if($("#his"+(i-1)).val() != ""){
+				$("#his"+i).show();
+			}
 			$("#his"+i).val($("#his"+(i-1)).val());
 		}
 	}
@@ -152,32 +160,32 @@
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his1" name="his1" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his1" name="his1" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his2" name="his2" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his2" name="his2" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his3" name="his3" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his3" name="his3" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his4" name="his4" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his4" name="his4" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his5" name="his5" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his5" name="his5" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="his6" name="his6" class="form-control" onclick="hisClick(this.value)"/>
+							<input type="text" id="his6" name="his6" class="form-control" onclick="hisClick(this.value)" readonly="readonly"/>
 						</td>
 					</tr>
 				</table>
