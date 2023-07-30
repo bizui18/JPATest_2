@@ -35,7 +35,7 @@
 		$("#menuAPISendTestBoard").attr('class','dropdown-item active'); 
 		$("#menuHome").attr('class','nav-link');
 		$("#selJsonData").css("visibility","hidden");
-		/*
+		
 		$("#sendJsonText").on('keydown',(e,data)=>{
 			if(e.altKey&&e.key =='s'){
 				fnSendJson();	
@@ -45,7 +45,6 @@
 				
 			}
 		});
-		*/
 		for(var i=1; i<7; i++){
 			$("#his"+i).hide();
 		}
@@ -135,7 +134,28 @@
 	function hisClick(param){
 		$("#sendJsonText").val(param);
 	}
-	
+
+	function fnToJsonBt(){
+		var formData = new FormData();
+		
+		formData.append("data", $("#sendJsonText").val());
+	    
+	    $.ajax({
+	        url : "toJsonConv",
+	        type : 'POST', 
+	        processData : false,
+	        contentType : false,
+	        data : formData ,
+	        success : function(result) {
+	        	console.log(result);
+	        	console.log(JSON.stringify(JSON.parse(result),null,4));
+	        	$("#sendJsonText").val(JSON.stringify(JSON.parse(result),null,4));
+	        },  
+	        error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
 </script>
 <body>
 	<%@ include file="/WEB-INF/views/includes/top.jsp" %>
@@ -203,15 +223,15 @@
 			<div class="form-group">
 				<table>
 					<tr>
-						<td> 암호화 :</td> 
-						<td>
+						<td width="62"> 암호화 :</td> 
+						<td width="80">
 							<select class="form-select" name="encYn" id="encYn" style="max-width:fit-content">
 						    	<option>Y</option>
 						    	<option>N</option>
 					    	</select>
 					    </td>
 						<td width="70" align="right"> URL :</td> 
-						<td>
+						<td width="95">
 							<select class="form-select" name="selServer" id="selServer" style="max-width:fit-content" onchange="fnSelServer(this.value)">
 						    	<option value="http://localhost:8082">로컬</option>
 						    	<option value="https://dev-interface.pass-mdl.com:5243">개발</option>
@@ -220,20 +240,23 @@
 						<td width="320">
 					    	<input type="text" id="serverText" name="serverText" class="form-control" value="http://localhost:8082"/>
 					    </td>
-						<td>
+						<td width="320">
 							<select class="form-select" name="selAPI" id="selAPI" style="max-width:fit-content" onchange="fnSelAPI(this.value)">
 					    	</select>
 					    </td>
-				    	<td>
+				    	<td width="135">
 							<button class="btn btn-primary" type="button" id="sampleJsonBt" onClick="fnSampleJson()">Json 양식 생성</button>
-						</td>					    
-						<td width="350">
-							<select class="form-select" name="selJsonData" id="selJsonData" style="width:100">
+						</td>			
+						<td width="210">
+							<button class="btn btn-primary" type="button" id="toJsonBt" onClick="fnToJsonBt()">Map.toString To Json</button>
+						</td>
+						<td>
+							<select class="form-select" name="selJsonData" id="selJsonData">
 					    	</select>
 					    </td>
 				    </tr>
 				    <tr>
-				    	<td colspan="8">
+				    	<td colspan="9">
 							<textarea class="form-control" id="sendJsonText" name="sendJsonText" rows="10" data-grammar="true" spellcheck="false"></textarea>
 						</td>
 					</tr>

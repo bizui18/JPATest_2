@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -38,6 +40,7 @@ import com.JPATest.service.LottoInfoBoardService;
 import com.JPATest.util.cipher.base64.Base64;
 import com.JPATest.util.cipher.padding.BlockPadding;
 import com.JPATest.util.cipher.seed.KISA_SEED_CBC;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @Controller
@@ -198,7 +201,6 @@ public class APITestBoardController implements WebMvcConfigurer {
 		return "encDecBoard";
 	}
 
-
 	@ResponseBody
 	@PostMapping("/sendEndDecData")
 	public String sendEndDecData(String data, String encDecFg, String serverFg) throws Exception {
@@ -225,5 +227,29 @@ public class APITestBoardController implements WebMvcConfigurer {
 		}
 		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
 		return result;
+	}
+	
+	@ResponseBody
+	@PostMapping("/toJsonConv")
+	public String toJsonConv(String data) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/toJsonConv] ######");
+
+	    String str = data;
+	    Properties props = new Properties();
+
+	    props.load(new StringReader(str.substring(1, str.length() - 1).replace(", ", "\n")));
+	    
+	    Map<String, Object> map = new HashMap<>();
+	    
+	    for (Map.Entry<Object, Object> e : props.entrySet()) {
+	        map.put((String) e.getKey(), e.getValue());
+	    }
+
+	    ObjectMapper mapper = new ObjectMapper();
+	    
+	    String json = mapper.writeValueAsString(map); // map => json string
+		
+		logger.info("###### END [APITestBoardController :: /views/toJsonConv] ######");
+		return json;
 	}
 }

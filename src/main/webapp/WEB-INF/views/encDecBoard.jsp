@@ -57,10 +57,12 @@
 	        }
 	    });
 	}
+	
 	function fnBeauty(){
 		$("#resultData").val(JSON.stringify(JSON.parse($("#resultData").val()),null,4));
 	}
-</script>
+
+	</script>
 <body>
 	<%@ include file="/WEB-INF/views/includes/top.jsp" %>
 
