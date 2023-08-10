@@ -61,7 +61,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 	private String prod_iv = "p.mobilelcnse.dr";
 	
 	@RequestMapping("/apiSendTestBoard")
-	public String apiSendTestBoard(@RequestParam(value = "schDrwNo", required = false) String schDrwNo, Model model) throws Exception {
+	public String apiSendTestBoard() throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/apiSendTestBoard] ######");
 
 		logger.info("###### END [APITestBoardController :: /views/apiSendTestBoard] ######");
@@ -70,20 +70,26 @@ public class APITestBoardController implements WebMvcConfigurer {
 
 	@ResponseBody
 	@PostMapping("/sendJson")
-	public JSONObject sendJson(String text, String encYn, String urlText, String selUrl) throws Exception {
+	public JSONObject sendJson(String text, String encYn, String urlText, String urlServer) throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/sendJson] ######");
 
 		String encryptCBC = "";
 		JSONObject result = new JSONObject();
-		
+
 		if(!text.isEmpty()) {
 		    
 	        if(encYn.equals("Y")) {
-	        	encryptCBC = "{\"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
+	        	if(urlServer.equals("DEV")) {
+	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
+	        	}else if(urlServer.equals("PROD")) {
+	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+	        	}else {
+	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+	        	}
 	        } else {
 	        	encryptCBC = "{\"data\":" + text + "}";
 	        }
-			result = sendData(urlText, encryptCBC, encYn);
+			result = sendData(urlText, encryptCBC, encYn, urlServer);
 		}else {
 			result.put("errorCode", "9999");
 			result.put("errorMsg", "전송 DATA 부가 없습니다.");
@@ -104,7 +110,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 		return jpaRstList;
 	}
 	
-	public JSONObject sendData(String url, String jsonData, String encYn) throws IOException, ParseException {
+	public JSONObject sendData(String url, String jsonData, String encYn, String urlServer) throws IOException, ParseException {
 
 		  CloseableHttpClient client = null;
 		  BufferedReader in = null;
@@ -118,10 +124,8 @@ public class APITestBoardController implements WebMvcConfigurer {
 
 		      // JSON 데이터를 추가.
 		      httpPost.setEntity(new StringEntity(jsonData, ContentType.APPLICATION_JSON));
-
 		      // 실행
 		      CloseableHttpResponse httpresponse = client.execute(httpPost);
-
 		      // 결과 수신
 		      InputStream inputStream = (InputStream)httpresponse.getEntity().getContent();
 
@@ -134,11 +138,17 @@ public class APITestBoardController implements WebMvcConfigurer {
 		      
 		      JSONParser parser = new JSONParser();
 		      JSONObject jsonObject = (JSONObject) parser.parse(result.toString());
+		      String decryptCBC = "";
 		      
 		      if(encYn.equals("Y")) {
 		    	  if(jsonObject.get("resultCode").toString().equals("0000")) {
-				      String decryptCBC = decryptCBC(jsonObject.get("data").toString(), dev_key, dev_iv);
-				      
+		    		  if(urlServer.equals("DEV")) {
+		    			  decryptCBC = decryptCBC(jsonObject.get("data").toString(), dev_key, dev_iv);
+		    		  }else if(urlServer.equals("PROD")) {
+		    			  decryptCBC = decryptCBC(jsonObject.get("data").toString(), prod_key, prod_iv);
+		    		  }else {
+		    			  decryptCBC = decryptCBC(jsonObject.get("data").toString(), prod_key, prod_iv);
+		    		  }
 				      JSONObject dataJson = (JSONObject) parser.parse(decryptCBC);
 				      jsonObject.put("data", dataJson);
 		    	  }

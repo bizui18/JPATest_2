@@ -82,7 +82,8 @@
 		formData.append("text", $("#sendJsonText").val());
 		formData.append("encYn", $("#encYn").val());
 		formData.append("urlText", urlText);
-	    
+		formData.append("urlServer", $("#selServer option:selected").text());
+		
 		$("#sendUrl").val(urlText);
 		$("#resultJsonText").val("");
 		
@@ -233,8 +234,9 @@
 						<td width="70" align="right"> URL :</td> 
 						<td width="95">
 							<select class="form-select" name="selServer" id="selServer" style="max-width:fit-content" onchange="fnSelServer(this.value)">
-						    	<option value="http://localhost:8082">로컬</option>
-						    	<option value="https://dev-interface.pass-mdl.com:5243">개발</option>
+						    	<option value="http://localhost:8082">LOCAL</option>
+						    	<option value="https://dev-interface.pass-mdl.com:5243">DEV</option>
+						    	<option value="http://prod-interface.pass-mdl.com:5200">PROD</option>
 					    	</select>
 					    </td>
 						<td width="320">
