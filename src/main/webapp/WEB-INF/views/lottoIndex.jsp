@@ -15,7 +15,7 @@
 		fnSchExptdLottoNoSel()
 	});
 	
-	//나의 로또 번호 조회
+	//로또 번호 조회
     function fnSchExptdLottoNoSel(){
         $.ajax({
             url : 'exptdLottoNoSel',

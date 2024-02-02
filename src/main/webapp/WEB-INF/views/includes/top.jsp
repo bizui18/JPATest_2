@@ -41,6 +41,18 @@
 	                        <a class="dropdown-item" id="menuEncDecPage" href="encDecBoard">암복호화</a>
 	                    </div>
 	                </li>
+	                <li class="nav-item dropdown">
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Statistics</a>
+	                    <div class="dropdown-menu" id="menuStats">
+	                        <a class="dropdown-item" id="menuChart" href="statsChartBoard">차트</a>
+	                    </div>
+	                </li>
+	                <li class="nav-item dropdown">
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Chat</a>
+	                    <div class="dropdown-menu" id="menuChatRoom">
+	                        <a class="dropdown-item" id="menuChat" href="chatRoomBoard">채팅</a>
+	                    </div>
+	                </li>
 	            </ul>
 	        </div>
 	    </div>

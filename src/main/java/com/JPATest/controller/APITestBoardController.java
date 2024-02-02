@@ -34,9 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.JPATest.entity.APITest;
-import com.JPATest.entity.LottoInfo;
 import com.JPATest.service.APITestService;
-import com.JPATest.service.LottoInfoBoardService;
 import com.JPATest.util.cipher.base64.Base64;
 import com.JPATest.util.cipher.padding.BlockPadding;
 import com.JPATest.util.cipher.seed.KISA_SEED_CBC;
@@ -89,6 +87,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 	        } else {
 	        	encryptCBC = "{\"data\":" + text + "}";
 	        }
+	        logger.info("encryptCBC : " + encryptCBC);
 			result = sendData(urlText, encryptCBC, encYn, urlServer);
 		}else {
 			result.put("errorCode", "9999");
@@ -163,8 +162,8 @@ public class APITestBoardController implements WebMvcConfigurer {
 		              in.close();
 		          } catch(IOException ioe) { throw ioe; }
 		      }
-		  }
 		}
+	}
 
 	public static String encryptCBC(String data, String key, String iv)
 			throws UnsupportedEncodingException {
