@@ -21,6 +21,7 @@
 		$("#menuHome").attr('class','nav-link'); 
 		
 	});
+	
 	//파일 작업
 	function fnLogFile(){
 	
@@ -28,9 +29,10 @@
 			alert("경로가 없습니다.");
 			return;
 		}	
-	    
+	   
+		$("#schLogFilePathBt").attr("disabled", true);
+		 
 		let formData = $("#schLogFileFm");
-
         $.ajax({
             url : $("#schLogFileFm").attr('action'),
             type : 'GET', 
@@ -39,11 +41,13 @@
             success : function(result) {
 	        	alert(result);
 	        	$("#schLogFilePath").val("");
+	    		$("#schLogFilePathBt").attr("disabled", false);
 	        }
 	    	, error : function(xhr, status) {
 	        	alert(xhr + " : " + status);
+	        	$("#schLogFilePathBt").attr("disabled", false);
 	        }
-	   });
+	    });
 	}
 	
 	//통계 조회
@@ -62,6 +66,19 @@
             	var key1Arr = new Array();
             	var key2Arr = new Array();
             	var valArr = new Array();
+            	
+            	var skKeyArr = new Array();
+            	var ktKeyArr = new Array();
+            	var lgKeyArr = new Array();
+            	
+            	var skValArr = new Array();
+            	var ktValArr = new Array();
+            	var lgValArr = new Array();
+            	
+            	var ski = 0;
+            	var kti = 0;
+            	var lgi = 0;
+            	
             	for(let i=0; i<json.length; i++){
 					
             		valArr[i] = json[i].val;
@@ -105,7 +122,7 @@
 						}
 						key1Arr[i] = var1;
             		}else{
-            			key1Arr[i] = json[i].key1;
+            			key1Arr[i] = json[i].key1 + "년생";
             		}
 					
 					if($("#text").val() != "strm1" && $("#text").val() != "strm4"){
@@ -113,17 +130,26 @@
 						
 						if("1002003" == var2){
 							var2 = "SKT";
+							skValArr[ski] = valArr[i]
+							skKeyArr[ski] = key1Arr[i]
+							ski++;
 						} else if("1002002" == var2){
 							var2 = "LGU";
+							lgValArr[lgi] = valArr[i]
+							lgKeyArr[lgi] = key1Arr[i]
+							lgi++;
 						} else if("1002001" == var2){
 							var2 = "KT";
+							ktValArr[kti] = valArr[i]
+							ktKeyArr[kti] = key1Arr[i]
+							kti++;
 						}
 						
 						key2Arr[i] = var2;
 					}
             	}
 
-            	if($("#text").val() != "strm1" && $("#text").val() != "strm4"){
+            	if($("#text").val() == "strm2" || $("#text").val() == "strm5"){
 		            var trace1 = {
 	         		  x: key1Arr,
 	         		  y: key2Arr,
@@ -141,7 +167,7 @@
 	         		var layout = {
 	         		  title: $("#text option:selected").text()
 	         		  , showlegend: false
-	         		  , height: 1000
+	         		  , height: 1200
 	         		  //, width: 1200
 	         		  , xaxis: {
 	         			}
@@ -149,7 +175,39 @@
 	         			}
 	         		};
 	         		
-         			Plotly.newPlot('myDiv', data, layout);				
+         			Plotly.newPlot('myDiv', data, layout);			
+         			
+            	}else if($("#text").val() == "strm3" || $("#text").val() == "strm6"){
+           			var sk = {
+       				  x: skKeyArr,
+       				  y: skValArr,
+       				  name: 'SK',
+       				  type: 'bar'
+       				};
+       				var kt = {
+       				  x: ktKeyArr,
+       				  y: ktValArr,
+       				  name: 'KT',
+       				  type: 'bar'
+       				};
+       				var lg = {
+       				  x: lgKeyArr,
+       				  y: lgValArr,
+       				  name: 'LG',
+       				  type: 'bar'
+       				 }
+
+       				var data = [sk, kt, lg];
+       				var layout = {
+       				  //xaxis: {title: '지역'},
+       				  yaxis: {title: '사용량'},
+       				  barmode: 'relative',
+       				  title: $("#text option:selected").text()
+       				  , height: 1200
+       				};
+
+       				Plotly.newPlot('myDiv', data, layout);
+       				
             	}else{
             		var data = [
             			  {
@@ -161,8 +219,9 @@
 
             		var layout = {
       	         		  title: $("#text option:selected").text()
+      	         		  , yaxis: {title: '사용량'}
       	         		  , showlegend: false
-      	         		  , height: 1000
+      	         		  , height: 1200
       	         		  //, width: 1200
       	         	};
             		
@@ -195,7 +254,7 @@
 	        
 	        <div class="input-group mb-3" style="margin: 50px 0px 0px 0px;">
 	            <input type="text" id="schLogFilePath" name="schLogFilePath" style="max-width:fit-content" class="form-control" placeholder="로그파일 경로"/> 
-	            <button class="btn btn-primary" type="button" id="schLogFilePathBt" onClick="fnLogFile()">로그 적용</button>
+	            <button class="btn btn-primary" type="button" id="schLogFilePathBt" name="schLogFilePathBt" onClick="fnLogFile()">로그 적용</button>
 	        </div>
 		</div>
 	</form>
@@ -210,7 +269,7 @@
 			    <option value="strm5">나이_기종 건수</option>
 			    <option value="strm6">나이_통신사 건수</option>
 		    </select>
-            <button class="btn btn-primary" type="button" id="schStats" onClick="fnSchStats()">조회</button>
+            <button class="btn btn-primary" type="button" id="schStats" name="schStats" onClick="fnSchStats()">조회</button>
         </div>
 
         <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
