@@ -6,10 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.JPATest.entity.APITest;
+import com.JPATest.repository.TBENCRepository;
 import com.JPATest.service.APITestService;
 import com.JPATest.util.cipher.base64.Base64;
 import com.JPATest.util.cipher.padding.BlockPadding;
@@ -48,7 +52,8 @@ public class APITestBoardController implements WebMvcConfigurer {
 
 	@Autowired
 	APITestService apiTestService;
-	
+	@Autowired
+	TBENCRepository tbEncRepository;
 	private final static Logger logger = LoggerFactory.getLogger("");
 	
 	private static final int SEED_BLOCK_SIZE = 16;
@@ -97,16 +102,66 @@ public class APITestBoardController implements WebMvcConfigurer {
 		logger.info("###### END [APITestBoardController :: /views/sendJson] ######");
 		return result;
 	}
+	@ResponseBody
+	@PostMapping("/sendJson2")
+	public String sendJson2(String text, String encYn, String urlText, String urlServer) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/sendJson] ######");
 
+		String url = "https://dev-interface.pass-mdl.com:5243/api/mobilelcnse/mlif/manage/reqMobileDrvLcnseTruflsCnfirm";
+		String encYN = "Y";
+		List<String> drvLcnsNos = split(text);
+		List<APITest> jpaRstList = apiTestService.selTrgtUrl();
+		logger.info(String.valueOf(drvLcnsNos.size()));
+		JSONParser parser = new JSONParser();
+//		JSONObject jsonObject = (JSONObject) parser.parse(result.toString());
+		StringBuilder sb = new StringBuilder();
+		List<String> result = new ArrayList<>();
+	    tbEncRepository.findAll().stream()
+	    .filter(t->{
+	    	if(drvLcnsNos.size()==0)return true;
+	    	try {
+				JSONObject jsonObject = (JSONObject)parser.parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
+				for(String drvLcnsNo : drvLcnsNos) {
+					if(jsonObject.getOrDefault("drvLcnsNo","No").toString().startsWith(drvLcnsNo)) {
+						logger.info(jsonObject.get("nm").toString());
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+	    	return false;
+	    })
+	    .forEach(t -> {
+			try {
+				String enc = String.format("{\"data\":\"%s\"}",t.getEnc());
+				JSONObject req = (JSONObject) parser.parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
+				JSONObject res = (JSONObject) sendData(url, enc, encYN, "DEV").get("data");
+				
+				sb.append("nm : ");
+				sb.append(req.getOrDefault("nm", "").toString());
+				sb.append(" drvLcnsNo : ");
+				sb.append(req.getOrDefault("drvLcnsNo", "").toString());
+				sb.append("  drvLcnseTruflsCnfirmCode : ");
+				sb.append(res.getOrDefault("drvLcnseTruflsCnfirmCode", "").toString());
+				sb.append('\n');
+				
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+		logger.info("###### END [APITestBoardController :: /views/sendJson] ######");
+		return sb.toString();
+	}
 	@ResponseBody
 	@RequestMapping("/selTrgtUrl")
 	public List<APITest> selTrgtUrl() throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/selTrgtUrl] ######");
-
-		List<APITest> jpaRstList = apiTestService.selTrgtUrl();
-	    
+		List<APITest> result = apiTestService.selTrgtUrl();
 		logger.info("###### END [APITestBoardController :: /views/selTrgtUrl] ######");
-		return jpaRstList;
+		return result;
 	}
 	
 	public JSONObject sendData(String url, String jsonData, String encYn, String urlServer) throws IOException, ParseException {
@@ -202,6 +257,31 @@ public class APITestBoardController implements WebMvcConfigurer {
 		}
 	}
 
+	public static List<String> split(String text) {
+		text = text.trim().replaceAll("-","");
+		Queue<Character> q = new LinkedList<>();
+        for (Character c : text.toCharArray()) {
+            q.add(c);
+        }
+        
+        List<String> list = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            char now = q.poll();
+            if('0'<= now && now<='9'){
+                sb.append(now);
+            }else{
+                if(sb.length()>0){
+                    list.add(sb.toString());
+                }
+                sb = new StringBuilder();
+            }
+        }
+        if(sb.length()>0){
+            list.add(sb.toString());
+        }
+		return list;
+	}
 	@RequestMapping("/encDecBoard")
 	public String encDecBoard(@RequestParam(value = "schDrwNo", required = false) String schDrwNo, Model model) throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/encDecBoard] ######");

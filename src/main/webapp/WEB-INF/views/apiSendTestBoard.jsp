@@ -105,7 +105,32 @@
 	        }
 	    });
 	}
-	
+	function fnSendJson2(param){
+		var formData = new FormData();
+		var urlText = $("#serverText").val() + $("#selAPI").val();
+		
+		formData.append("text", $("#sendJsonText").val());
+		formData.append("encYn", $("#encYn").val());
+		formData.append("urlText", urlText);
+		formData.append("urlServer", $("#selServer option:selected").text());
+		
+		$("#resultJsonText").val("");
+		
+	    $.ajax({
+	        url : "sendJson2",
+	        type : 'POST', 
+	        processData : false,
+	        contentType : false,
+	        data : formData ,
+	        success : function(result) {
+	        	let json = result;
+	        	$("#resultJsonText").val(result);
+	        },  
+	        error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
 	//서버 선택
 	function fnSelServer(param){
 		$("#serverText").val(param);
@@ -267,6 +292,9 @@
 					<tr>
 				    	<td>
 							<button class="btn btn-primary" type="button" id="sendJsonBt" onClick="fnSendJson()">보내기</button>
+						</td>
+						<td>
+							<button class="btn btn-primary" type="button" id="sendJsonBt2" onClick="fnSendJson2()">테스트</button>
 						</td>
 						<td width="800">
 					    	<input type="text" id="sendUrl" name="sendUrl" class="form-control" readonly="readonly" disabled="disabled"/>
