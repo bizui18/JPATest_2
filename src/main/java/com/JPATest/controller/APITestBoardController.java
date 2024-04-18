@@ -26,6 +26,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
@@ -58,10 +59,14 @@ public class APITestBoardController implements WebMvcConfigurer {
 	
 	private static final int SEED_BLOCK_SIZE = 16;
 	
-	private String dev_key = "MLDDEVSAMPLEKEY!";
-	private String dev_iv = "t.mobilelcnse.iv";
-	private String prod_key = "ncFqG7o61jWp4HFh!";
-	private String prod_iv = "p.mobilelcnse.dr";
+	@Value("${dev_key}")
+	private String dev_key;
+	@Value("${dev_iv}")
+	private String dev_iv;
+	@Value("${prod_key}")
+	private String prod_key;
+	@Value("${prod_iv}")
+	private String prod_iv;
 	
 	@RequestMapping("/apiSendTestBoard")
 	public String apiSendTestBoard() throws Exception {
@@ -110,12 +115,9 @@ public class APITestBoardController implements WebMvcConfigurer {
 		String url = "https://dev-interface.pass-mdl.com:5243/api/mobilelcnse/mlif/manage/reqMobileDrvLcnseTruflsCnfirm";
 		String encYN = "Y";
 		List<String> drvLcnsNos = split(text);
-		List<APITest> jpaRstList = apiTestService.selTrgtUrl();
 		logger.info(String.valueOf(drvLcnsNos.size()));
 		JSONParser parser = new JSONParser();
-//		JSONObject jsonObject = (JSONObject) parser.parse(result.toString());
 		StringBuilder sb = new StringBuilder();
-		List<String> result = new ArrayList<>();
 	    tbEncRepository.findAll().stream()
 	    .filter(t->{
 	    	if(drvLcnsNos.size()==0)return true;
