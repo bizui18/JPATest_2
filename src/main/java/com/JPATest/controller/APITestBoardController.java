@@ -128,7 +128,10 @@ public class APITestBoardController implements WebMvcConfigurer {
 		logger.info(String.valueOf(drvLcnsNos.size()));
 		JSONParser parser = new JSONParser();
 		StringBuilder sb = new StringBuilder();
+		
+		// "svcId" ,"drvLcnsNo" ,"reissuNo" ,"ci" ,"telecomCode" ,"indvdlinfoColctUseAgreAt" ,"issuDe" ,"userPblky" ,"agreJobCnsgnAgreAt" ,"brthdy" ,"esntlNo" ,"nm"
 		String[] headerReq = {"nm","drvLcnsNo"};
+		//"drvLcnseTruflsCnfirmCode","aptdPrsecEndDe","aptdPrsecBgnDe","juminEncStr","drvLcnseTimestamp","drvLcnsePhoto","issuDe","drvLcnseTyCode","esntlNo"
 		String[] headerRes = {"drvLcnseTruflsCnfirmCode","drvLcnseTyCode"};
 		Arrays.stream(headerReq).forEach(t -> sb.append(t).append(" / "));
 		Arrays.stream(headerRes).forEach(t -> sb.append(t).append(" / "));
