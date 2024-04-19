@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,10 +47,13 @@ import com.JPATest.util.cipher.padding.BlockPadding;
 import com.JPATest.util.cipher.seed.KISA_SEED_CBC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Setter;
+
 @Configuration
 @Controller
 @EnableAutoConfiguration
 @RequestMapping(value = "/views")
+@ConfigurationProperties(prefix = "mykey")
 public class APITestBoardController implements WebMvcConfigurer {
 
 	@Autowired
@@ -67,11 +72,16 @@ public class APITestBoardController implements WebMvcConfigurer {
 	private String prod_key;
 	@Value("${prod_iv}")
 	private String prod_iv;
+
+	private @Setter String devKey;
+	private @Setter String prodKey;
+
 	
 	@RequestMapping("/apiSendTestBoard")
 	public String apiSendTestBoard() throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/apiSendTestBoard] ######");
-
+		System.out.println(devKey);
+		System.out.println(prodKey);
 		logger.info("###### END [APITestBoardController :: /views/apiSendTestBoard] ######");
 		return "apiSendTestBoard";
 	}
@@ -118,6 +128,12 @@ public class APITestBoardController implements WebMvcConfigurer {
 		logger.info(String.valueOf(drvLcnsNos.size()));
 		JSONParser parser = new JSONParser();
 		StringBuilder sb = new StringBuilder();
+		String[] headerReq = {"nm","drvLcnsNo"};
+		String[] headerRes = {"drvLcnseTruflsCnfirmCode","drvLcnseTyCode"};
+		Arrays.stream(headerReq).forEach(t -> sb.append(t).append(" / "));
+		Arrays.stream(headerRes).forEach(t -> sb.append(t).append(" / "));
+		sb.append("\n");
+		
 	    tbEncRepository.findAll().stream()
 	    .filter(t->{
 	    	if(drvLcnsNos.size()==0)return true;
@@ -140,14 +156,9 @@ public class APITestBoardController implements WebMvcConfigurer {
 				JSONObject req = (JSONObject) parser.parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
 				JSONObject res = (JSONObject) sendData(url, enc, encYN, "DEV").get("data");
 				
-				sb.append("nm : ");
-				sb.append(req.getOrDefault("nm", "").toString());
-				sb.append(" drvLcnsNo : ");
-				sb.append(req.getOrDefault("drvLcnsNo", "").toString());
-				sb.append("  drvLcnseTruflsCnfirmCode : ");
-				sb.append(res.getOrDefault("drvLcnseTruflsCnfirmCode", "").toString());
+				Arrays.stream(headerReq).forEach(col -> sb.append(req.getOrDefault(col, "").toString()).append(" / "));
+				Arrays.stream(headerRes).forEach(col -> sb.append(res.getOrDefault(col, "").toString()).append(" / "));
 				sb.append('\n');
-				
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
