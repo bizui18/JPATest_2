@@ -11,5 +11,7 @@ public interface LottoMapper {
 	List<Map<String, Object>> getTop6LottoNo(String param);
 	
 	List<Map<String, Object>> lottoNoStatsSel(Map<String, Object> reqMap);
+	
+	String testz();
 
 }

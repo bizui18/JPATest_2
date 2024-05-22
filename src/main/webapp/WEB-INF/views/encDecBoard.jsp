@@ -58,6 +58,28 @@
 	    });
 	}
 	
+	//테스트 테이저 저장
+	function fnSaveTestData(param){
+		var formData = new FormData();
+		formData.append("data", $("#resultData").val());
+	    
+		alert(formData);
+	    
+		$.ajax({
+	        url : "saveTestData",
+	        type : 'POST', 
+	        processData : false,
+	        contentType : false,
+	        data : formData ,
+	        success : function(result) {
+	        	$("#resultData").val(result);
+	        },  
+	        error : function(xhr, status) {
+	            alert(xhr + " : " + status);
+	        }
+	    });
+	}
+	
 	function fnBeauty(){
 		$("#resultData").val(JSON.stringify(JSON.parse($("#resultData").val()),null,4));
 	}
@@ -127,6 +149,9 @@
 					<tr>
 				    	<td>
 							<button class="btn btn-primary" type="button" id="beautyBt" onClick="fnBeauty()">JSON 정렬</button>
+						</td>
+				    	<td>
+							<button class="btn btn-primary" type="button" id="saveTestDataBt" onClick="fnSaveTestData()">테스트 데이터 저장</button>
 						</td>
 					</tr>
 				</table>

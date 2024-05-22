@@ -108,4 +108,15 @@ public class LottoService {
 		
 		return rstMap;
 	}
+	
+	public void testz() throws Exception {
+		int no = Integer.parseInt(lottoMapper.testz());
+		logger.info("no : " + no);
+		
+		while (no > 0) {
+			System.out.println(no);
+			Thread.sleep(5000);
+			no = Integer.parseInt(lottoMapper.testz());
+		}
+	}
 }

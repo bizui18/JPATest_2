@@ -169,4 +169,14 @@ public class LottoController {
  
         return map;
     }
+
+
+	@RequestMapping("/testz")
+	public void testz(@RequestParam(value="schDrwNo", required=false) String schDrwNo) throws Exception {
+		logger.info("###### START [LottoController :: /views/testz] ######");
+		
+		lottoService.testz();
+		
+		logger.info("###### END [LottoController :: /views/testz] ######");
+	}
 }

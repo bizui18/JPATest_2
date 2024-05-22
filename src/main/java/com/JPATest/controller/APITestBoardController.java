@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.JPATest.entity.APITest;
+import com.JPATest.entity.TBENC;
 import com.JPATest.repository.TBENCRepository;
 import com.JPATest.service.APITestService;
 import com.JPATest.util.cipher.base64.Base64;
@@ -329,6 +330,21 @@ public class APITestBoardController implements WebMvcConfigurer {
 		}
 		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
 		return result;
+	}
+	
+	@ResponseBody
+	@PostMapping("/saveTestData")
+	public String saveTestData(String data) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/sendEndDecData] ######");
+		
+		logger.info(" data : " + data);
+		
+		if(!data.isEmpty()) {
+			tbEncRepository.save(TBENC.builder().enc(data).build());
+		}
+		
+		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
+		return data;
 	}
 	
 	@ResponseBody

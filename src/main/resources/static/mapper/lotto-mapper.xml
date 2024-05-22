@@ -114,4 +114,10 @@
 		 ORDER BY crt_date DESC
 		 LIMIT 1
 	</select>
+
+	<select id="testz" parameterType="java.util.Map" resultType="string">
+		SELECT AA
+		  FROM TEST100		
+	</select>
+	
 </mapper>
