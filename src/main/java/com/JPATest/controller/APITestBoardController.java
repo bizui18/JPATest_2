@@ -129,16 +129,18 @@ public class APITestBoardController implements WebMvcConfigurer {
 		logger.info(String.valueOf(drvLcnsNos.size()));
 		JSONParser parser = new JSONParser();
 		StringBuilder sb = new StringBuilder();
+		
+		// "svcId" ,"drvLcnsNo" ,"reissuNo" ,"ci" ,"telecomCode" ,"indvdlinfoColctUseAgreAt" ,"issuDe" ,"userPblky" ,"agreJobCnsgnAgreAt" ,"brthdy" ,"esntlNo" ,"nm"
 		String[] headerReq = {"nm","drvLcnsNo"};
+		//"drvLcnseTruflsCnfirmCode","aptdPrsecEndDe","aptdPrsecBgnDe","juminEncStr","drvLcnseTimestamp","drvLcnsePhoto","issuDe","drvLcnseTyCode","esntlNo"
 		String[] headerRes = {"drvLcnseTruflsCnfirmCode","drvLcnseTyCode"};
 		Arrays.stream(headerReq).forEach(t -> sb.append(t).append(" / "));
 		Arrays.stream(headerRes).forEach(t -> sb.append(t).append(" / "));
 		sb.append("\n");
-		
-	    tbEncRepository.findAll().stream()
-	    .filter(t->{
-	    	if(drvLcnsNos.size()==0)return true;
-	    	try {
+		tbEncRepository.findAll().stream()
+		.filter(t->{
+			if(drvLcnsNos.size()==0)return true;
+			try {
 				JSONObject jsonObject = (JSONObject)parser.parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
 				for(String drvLcnsNo : drvLcnsNos) {
 					if(jsonObject.getOrDefault("drvLcnsNo","No").toString().startsWith(drvLcnsNo)) {
@@ -149,12 +151,14 @@ public class APITestBoardController implements WebMvcConfigurer {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-	    	return false;
-	    })
-	    .forEach(t -> {
+			return false;
+		})
+		.parallel()
+		.forEach(t -> {
 			try {
 				String enc = String.format("{\"data\":\"%s\"}",t.getEnc());
-				JSONObject req = (JSONObject) parser.parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
+				new JSONParser();
+				JSONObject req = (JSONObject) new JSONParser().parse(decryptCBC(t.getEnc(), dev_key, dev_iv));
 				JSONObject res = (JSONObject) sendData(url, enc, encYN, "DEV").get("data");
 				
 				Arrays.stream(headerReq).forEach(col -> sb.append(req.getOrDefault(col, "").toString()).append(" / "));
@@ -166,6 +170,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 				e.printStackTrace();
 			}
 		});
+		
 		logger.info("###### END [APITestBoardController :: /views/sendJson] ######");
 		return sb.toString();
 	}
