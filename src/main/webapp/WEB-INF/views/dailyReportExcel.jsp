@@ -31,8 +31,9 @@
 	$(document).ready(function(){
 		fnExcelList();
 		
-		$("#menuDailyReportExcelPage").attr('class','dropdown-item active'); 
+		$("#menuDailyReportExcelPage").attr('class','dropdown-item active');
 		$("#menuHome").attr('class','nav-link'); 
+		$("#menuExcel").attr('class','nav-link dropdown-toggle active');
 	});
 	
 	//작업 파일 리스트

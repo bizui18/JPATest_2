@@ -50,8 +50,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$("#menuChat").attr('class','dropdown-item active'); 
+		
+		$("#menuChatRoomPage").attr('class','dropdown-item active');
 		$("#menuHome").attr('class','nav-link'); 
+		$("#menuChat").attr('class','nav-link dropdown-toggle active'); 
 	});
 
 

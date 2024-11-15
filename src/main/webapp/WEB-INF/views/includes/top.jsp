@@ -17,10 +17,10 @@
 	        <div class="collapse navbar-collapse" id="navbarColor01">
 	            <ul class="navbar-nav me-auto">
 	                <li class="nav-item">
-	                    <a class="nav-link active" id="menuHome" href="lottoIndex">Home</a>
+	                    <a class="nav-link" id="menuHome" href="lottoIndex">Home</a>
 	                </li>
 	                <li class="nav-item dropdown">
-	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Lotto</a>
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" id="menuLotto">Lotto</a>
 	                    <div class="dropdown-menu" id="menuLotto">
 	                        <a class="dropdown-item" id="menuLottoInfoPage" href="lottoInfoBoard">로또 당첨 정보</a>
 	                        <a class="dropdown-item" id="menuMylottoNoPage" href="myLottoNo">나의 로또 번호</a>
@@ -29,28 +29,29 @@
 	                    </div>
 	                </li>
 	                <li class="nav-item dropdown">
-	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Excel</a>
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" id="menuExcel">Excel</a>
 	                    <div class="dropdown-menu" id="menuExcel">
 	                        <a class="dropdown-item" id="menuDailyReportExcelPage" href="dailyReportExcel">일일보고서 엑셀 작업</a>
 	                    </div>
 	                </li>
 	                <li class="nav-item dropdown">
-	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">API</a>
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" id="menuAPI">API</a>
 	                    <div class="dropdown-menu" id="menuTest">
 	                        <a class="dropdown-item" id="menuAPISendTestBoard" href="apiSendTestBoard">API 전송 테스트</a>
 	                        <a class="dropdown-item" id="menuEncDecPage" href="encDecBoard">암복호화</a>
+	                        <a class="dropdown-item" id="menuComparePage" href="compareBoard">비교</a>
 	                    </div>
 	                </li>
 	                <li class="nav-item dropdown">
-	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Statistics</a>
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" id="menuStatistics">Statistics</a>
 	                    <div class="dropdown-menu" id="menuStats">
-	                        <a class="dropdown-item" id="menuChart" href="statsChartBoard">차트</a>
+	                        <a class="dropdown-item" id="menuChartPage" href="statsChartBoard">차트</a>
 	                    </div>
 	                </li>
 	                <li class="nav-item dropdown">
-	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Chat</a>
+	                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" id="menuChat">Chat</a>
 	                    <div class="dropdown-menu" id="menuChatRoom">
-	                        <a class="dropdown-item" id="menuChat" href="chatRoomBoard">채팅</a>
+	                        <a class="dropdown-item" id="menuChatRoomPage" href="chatRoomBoard">채팅</a>
 	                    </div>
 	                </li>
 	            </ul>

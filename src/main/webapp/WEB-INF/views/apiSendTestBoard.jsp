@@ -32,8 +32,10 @@
 	$(document).ready(function(){
 		fnSchUrl();
 		
-		$("#menuAPISendTestBoard").attr('class','dropdown-item active'); 
+		$("#menuAPISendTestBoard").attr('class','dropdown-item active');
 		$("#menuHome").attr('class','nav-link');
+		$("#menuAPI").attr('class','nav-link dropdown-toggle active');
+		
 		$("#selJsonData").css("visibility","hidden");
 		
 		$("#sendJsonText").on('keydown',(e,data)=>{
@@ -83,6 +85,7 @@
 		formData.append("encYn", $("#encYn").val());
 		formData.append("urlText", urlText);
 		formData.append("urlServer", $("#selServer option:selected").text());
+		//formData.append("selVrsccmpnyManageId", $("#selVrsccmpnyManageId").val());
 		
 		$("#sendUrl").val(urlText);
 		$("#resultJsonText").val("");
@@ -192,7 +195,7 @@
 		<li class="breadcrumb-item active">
 		    <a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">API 전송 테스트</a>
 		    <div class="dropdown-menu" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 42px);" data-popper-placement="bottom-start">
-		        <a class="dropdown-item active" href="apiSendTestBoard">API 전송 테스트</a>
+		        <a class="dropdown-item active">API 전송 테스트</a>
 		        <a class="dropdown-item " href="encDecBoard">암복호화</a>
 		    </div>
 		</li>

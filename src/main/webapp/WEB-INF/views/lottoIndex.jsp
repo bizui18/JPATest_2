@@ -12,6 +12,9 @@
 <script>
 	$(document).ready(function(){
 
+		$("#menuHome").attr('class','nav-link active'); 
+		//$("#menuHome").removeAttr('href');
+		
 		fnSchExptdLottoNoSel()
 	});
 	

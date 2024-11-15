@@ -12,11 +12,11 @@
 <script src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <script>
-
 	$(document).ready(function(){
 
-		$("#menulottoNoStatsPage").attr('class','dropdown-item active'); 
+		$("#menulottoNoStatsPage").attr('class','dropdown-item active');
 		$("#menuHome").attr('class','nav-link'); 
+		$("#menuLotto").attr('class','nav-link dropdown-toggle active');
 		
 		fnSchLottoNoStats()
 	});
@@ -121,7 +121,7 @@
 		        <a class="dropdown-item" href="lottoInfoBoard">로또 당첨 번호</a>
 		        <a class="dropdown-item" href="myLottoNo">나의 로또 번호</a>
 		        <div class="dropdown-divider"></div>
-		        <a class="dropdown-item active" href="lottoNoStats">번호별 당첨 통계</a>
+		        <a class="dropdown-item active">번호별 당첨 통계</a>
 		    </div>
 		</li>		
 	</ol>	

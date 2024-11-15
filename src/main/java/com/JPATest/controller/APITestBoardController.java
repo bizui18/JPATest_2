@@ -41,12 +41,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.JPATest.entity.APITest;
 import com.JPATest.entity.TBENC;
+import com.JPATest.entity.Vrsccmpny;
 import com.JPATest.repository.TBENCRepository;
 import com.JPATest.service.APITestService;
 import com.JPATest.util.cipher.base64.Base64;
 import com.JPATest.util.cipher.padding.BlockPadding;
 import com.JPATest.util.cipher.seed.KISA_SEED_CBC;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import lombok.Setter;
 
@@ -94,20 +96,35 @@ public class APITestBoardController implements WebMvcConfigurer {
 
 		String encryptCBC = "";
 		JSONObject result = new JSONObject();
-
+		
 		if(!text.isEmpty()) {
-		    
-	        if(encYn.equals("Y")) {
-	        	if(urlServer.equals("DEV")) {
-	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
-	        	}else if(urlServer.equals("PROD")) {
-	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
-	        	}else {
-	        		encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
-	        	}
-	        } else {
-	        	encryptCBC = "{\"data\":" + text + "}";
-	        }
+		    if(urlText.contains("reqQRCreate")) {
+		    	Map<String, Object> map = jsonToMap(text);
+		    	if(encYn.equals("Y")) {
+		    		if(urlServer.equals("DEV")) {
+		    			encryptCBC = "{\"vrsccmpnyManageId\" : \""+ map.get("vrsccmpnyManageId").toString() + "\", \"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
+		    		}else if(urlServer.equals("PROD")) {
+		    			encryptCBC = "{\"vrsccmpnyManageId\" : \""+ map.get("vrsccmpnyManageId").toString() + "\", \"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+		    		}else {
+		    			encryptCBC = "{\"vrsccmpnyManageId\" : \""+ map.get("vrsccmpnyManageId").toString() + "\", \"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+		    		}
+		    	} else {
+		    		encryptCBC = "{\"data\":" + text + "}";
+		    	}
+		    }else {
+		    	if(encYn.equals("Y")) {
+		    		if(urlServer.equals("DEV")) {
+		    			encryptCBC = "{\"data\":\"" + encryptCBC(text, dev_key, dev_iv) + "\"}";
+		    		}else if(urlServer.equals("PROD")) {
+		    			encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+		    		}else {
+		    			encryptCBC = "{\"data\":\"" + encryptCBC(text, prod_key, prod_iv) + "\"}";
+		    		}
+		    	} else {
+		    		encryptCBC = "{\"data\":" + text + "}";
+		    	}
+		    }
+	        
 	        logger.info("encryptCBC : " + encryptCBC);
 			result = sendData(urlText, encryptCBC, encYn, urlServer);
 		}else {
@@ -174,11 +191,25 @@ public class APITestBoardController implements WebMvcConfigurer {
 		logger.info("###### END [APITestBoardController :: /views/sendJson] ######");
 		return sb.toString();
 	}
+
 	@ResponseBody
 	@RequestMapping("/selTrgtUrl")
 	public List<APITest> selTrgtUrl() throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/selTrgtUrl] ######");
+
 		List<APITest> result = apiTestService.selTrgtUrl();
+		
+		logger.info("###### END [APITestBoardController :: /views/selTrgtUrl] ######");
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/selVrsccmpnyList")
+	public List<Vrsccmpny> selVrsccmpnyList() throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/selTrgtUrl] ######");
+		
+		List<Vrsccmpny> result = apiTestService.selVrsccmpnyList();
+		
 		logger.info("###### END [APITestBoardController :: /views/selTrgtUrl] ######");
 		return result;
 	}
@@ -311,28 +342,41 @@ public class APITestBoardController implements WebMvcConfigurer {
 
 	@ResponseBody
 	@PostMapping("/sendEndDecData")
-	public String sendEndDecData(String data, String encDecFg, String serverFg) throws Exception {
+	public String sendEndDecData(String data, String encDecFg, String serverFg, String selVrsccmpnyManageId) throws Exception {
 		logger.info("###### START [APITestBoardController :: /views/sendEndDecData] ######");
 
 		String result = "";
+		String key = "";
+		String iv = "";
+		
+		if(selVrsccmpnyManageId.isEmpty()) {
+			if("DEV".equals(serverFg)) {
+				key = dev_key;
+				iv = dev_iv;
+			}else if("PROD".equals(serverFg)) {
+				key = prod_key;
+				iv = prod_iv;
+			}
+		}else {
+			Vrsccmpny vrsccmpny = apiTestService.selVrsccmpny(selVrsccmpnyManageId, serverFg);
+			if(vrsccmpny == null) {
+				return serverFg + "서버에 대행사(" + selVrsccmpnyManageId + ")가 없습니다.";
+			}
+			
+			key = vrsccmpny.getSeedKey();
+			iv = vrsccmpny.getIv();
+		}
 		
 		if(!data.isEmpty()) {
-	        if(encDecFg.equals("ENC")) {
-	        	if(serverFg.equals("DEV")) {
-	        		result = encryptCBC(data, dev_key, dev_iv);
-	        	}else if(serverFg.equals("PROD")) {
-	        		result = encryptCBC(data, prod_key, prod_iv);
-	        	}
-	        	logger.info(serverFg + "_암호화 : " + result);
-	        } else if(encDecFg.equals("DEC")) {
-	        	if(serverFg.equals("DEV")) {
-	        		result = decryptCBC(data, dev_key, dev_iv);
-	        	}else if(serverFg.equals("PROD")) {
-	        		result = decryptCBC(data, prod_key, prod_iv);
-	        	}
-	        	logger.info(serverFg + "_복호화 : " + result);
-	        }
+			if(encDecFg.equals("ENC")) {
+				result = encryptCBC(data, key, iv);
+				logger.info(serverFg + "_암호화 : " + result);
+			} else if(encDecFg.equals("DEC")) {
+				result = decryptCBC(data, key, iv);
+				logger.info(serverFg + "_복호화 : " + result);
+			}
 		}
+		
 		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
 		return result;
 	}
@@ -340,7 +384,7 @@ public class APITestBoardController implements WebMvcConfigurer {
 	@ResponseBody
 	@PostMapping("/saveTestData")
 	public String saveTestData(String data) throws Exception {
-		logger.info("###### START [APITestBoardController :: /views/sendEndDecData] ######");
+		logger.info("###### START [APITestBoardController :: /views/saveTestData] ######");
 		
 		logger.info(" data : " + data);
 		
@@ -348,8 +392,30 @@ public class APITestBoardController implements WebMvcConfigurer {
 			tbEncRepository.save(TBENC.builder().enc(data).build());
 		}
 		
-		logger.info("###### END [APITestBoardController :: /views/sendEndDecData] ######");
+		logger.info("###### END [APITestBoardController :: /views/saveTestData] ######");
 		return data;
+	}
+	
+	@ResponseBody
+	@PostMapping("/saveVrsccmpny")
+	public String saveVrsccmpny(String vrsccmpnyNm, String vrsccmpnyManageId, String seedKey, String iv, String serverFg) throws Exception {
+		logger.info("###### START [APITestBoardController :: /views/saveVrsccmpny] ######");
+
+		logger.info("vrsccmpnyManageId : " + vrsccmpnyManageId);
+ 
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("vrsccmpnyManageId", vrsccmpnyManageId);
+		map.put("vrsccmpnyNm", vrsccmpnyNm);
+		map.put("seedKey", seedKey);
+		map.put("iv", iv);
+		map.put("serverFg", serverFg);
+
+		if(!vrsccmpnyManageId.isEmpty()) {
+			apiTestService.saveVrsccmpny(map);
+		}
+		
+		logger.info("###### END [APITestBoardController :: /views/saveVrsccmpny] ######");
+		return "저장되었습니다.";
 	}
 	
 	@ResponseBody
@@ -374,5 +440,18 @@ public class APITestBoardController implements WebMvcConfigurer {
 		
 		logger.info("###### END [APITestBoardController :: /views/toJsonConv] ######");
 		return json;
+	}
+
+	public Map<String,Object> jsonToMap(String json) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		try {
+			if (json!=null&&!json.trim().isEmpty()) {
+				Gson gson = new Gson();
+				map = (Map<String,Object>) gson.fromJson(json,map.getClass());
+			}
+		} catch (Exception ignored) {
+			logger.error("jsonToMap 에러", ignored.getMessage());
+		}
+		return map;
 	}
 }

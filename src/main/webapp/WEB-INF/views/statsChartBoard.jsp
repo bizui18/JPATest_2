@@ -14,11 +14,11 @@
 <script src='https://cdn.plot.ly/plotly-2.11.1.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
 <script>
-
 	$(document).ready(function(){
 
-		$("#menuChart").attr('class','dropdown-item active'); 
+		$("#menuChartPage").attr('class','dropdown-item active');
 		$("#menuHome").attr('class','nav-link'); 
+		$("#menuStatistics").attr('class','nav-link dropdown-toggle active'); 
 		
 	});
 	
